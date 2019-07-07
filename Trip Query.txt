@@ -1,0 +1,70 @@
+SELECT    
+        t.rec_id                               AS Servicetask_recid , --MAX(r.record_id)     AS Log_recordid,
+        TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') AS Servicetask_Createddate, UPDATED_DATE, t.ref1                                      AS Servicetask_Type,
+        ref2,
+--        t.Ref_no                                     AS Servicetask_refno,
+        loc,invno,
+        MAX(r.RESPONSE_BODY) AS log_Response,           
+        t.STATUS                                    AS Servicetask_status,
+        TO_CHAR(SUBSTR(t.REQUEST_BODY,0,3999))      AS Servicetask_Requestbody,
+        r.CURRDATE                                  AS Log_date,       
+        comp_id    
+      
+FROM
+      (
+          SELECT  ref2 
+         ,site_id loc,
+          a.ref1,A.CREATED_DATE,TO_CHAR(a.UPDATED_DATE,'dd-MM-yyyy') UPDATED_DATE,a.comp_id,A.STATUS,A.REQUEST_BODY,a.REC_ID
+          FROM wms.service_task a
+          WHERE ref1 = 'TripSheet' 
+       --   and ( comp_id = 'RT' or ref3 = 'SQL')  
+          --to_char(created_date ,'ddmmyy')>= '120519'  
+--        and  created_date >= '12-APR-2019'         
+          AND status IN ('Failed')          
+--         and ref2 = 'TP/CAL/18/00008001'
+          
+      ) t
+left JOIN
+    ( 
+        select  
+        TO_CHAR(CURRDATE,'dd-MM-yyyy')CURRDATE,
+        url,     
+        case when Additional_Info = 'TripSheet' then
+        nvl( EXTRACTVALUE(xmltype(request_body), '//RamcoTripLog[1]//TripLogDetail[1]//TripSheetNumber'),
+        EXTRACTVALUE(xmltype(request_body), '//ArrayOfRedTripSheet[1]//RedTripSheet[1]//TripSheetNumber') ) else 'NA'  End Ref_no,
+           case when Additional_Info = 'TripSheet' then
+        nvl( EXTRACTVALUE(xmltype(request_body), '//RamcoTripLog[1]//TripLogDetail[1]//ShipperInvoiceNumber'),
+        EXTRACTVALUE(xmltype(request_body), '//ArrayOfRedTripSheet[1]//RedTripSheet[1]//ShipperInvoiceNumber')
+        ) 
+        else 'NA'  End invno,
+         max(record_id)record_id,
+        max(NVL(TO_CHAR(SUBSTR(RESPONSE_BODY,0,3999)),'NA'))RESPONSE_BODY,max(NVL(a.REQUEST_STATUS,'NA'))REQUEST_STATUS
+        from WMS.Service_Request_Outbound a
+        where currdate >= '01-APR-2019' and A.Additional_Info = 'TripSheet'  and request_status != 'OK' --and request_body  like  '%TP/AHM/18/00002154%'
+        and url in ('http://13.71.119.41:8281/api/inboundorder/confirm/v1','http://13.71.119.41:8281/api/outboundorder/',
+        'https://90.90.90.242:52701/RESTAdapter/ProConnect/DispatchTripSheetPoD')
+       group by CURRDATE,Additional_Info,    nvl( EXTRACTVALUE(xmltype(request_body), '//RamcoTripLog[1]//TripLogDetail[1]//ShipperInvoiceNumber'),
+        EXTRACTVALUE(xmltype(request_body), '//ArrayOfRedTripSheet[1]//RedTripSheet[1]//ShipperInvoiceNumber')
+        ),url
+       ,case when Additional_Info = 'TripSheet' then
+          nvl( EXTRACTVALUE(xmltype(request_body), '//RamcoTripLog[1]//TripLogDetail[1]//TripSheetNumber'),
+        EXTRACTVALUE(xmltype(request_body), '//ArrayOfRedTripSheet[1]//RedTripSheet[1]//TripSheetNumber') ) else 'NA'  End
+    ) r
+ON t.Ref2         = r.Ref_no
+and UPDATED_DATE = r.CURRDATE
+--where ref2 in (
+--'B10003282')
+--where invno = 'Z110001015'
+GROUP BY  t.rec_id ,t.ref1 ,ref2,loc, TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') ,
+        t.STATUS    ,invno,
+        TO_CHAR(SUBSTR(t.REQUEST_BODY,0,3999)),
+        r.CURRDATE  ,comp_id,UPDATED_DATE
+--having 
+--(
+--MAX(r.RESPONSE_BODY)  like '%foreign_lock%'
+--MAX(r.RESPONSE_BODY)   like '%Maintain the Correct Invoice Number%'
+--MAX(r.RESPONSE_BODY) not like '%Not Found%'
+--)
+
+
+order by TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') asc;

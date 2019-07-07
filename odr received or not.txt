@@ -1,0 +1,6 @@
+select  * from Client_Service_Log (nolock)  where Client_Name='ASHOKLEYLAND' and Service_Name='ASN' 
+and JSON_VALUE(convert(nvarchar(max), Client_Json),'$.OrderNumber')='2002789286'
+
+
+select * from Service_Logs where Client_Name='ASHOKLEYLAND' and Client_Service='ASN' 
+and JSON_VALUE(convert(nvarchar(max), Client_Request_Json),'$.OrderNumber')='2002789286'

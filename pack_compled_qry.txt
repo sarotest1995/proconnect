@@ -1,0 +1,45 @@
+select a.Ord_Dt_Outbnd_OrdNO as WM_OBD_No,a.Ord_Dt_Pri_RefDocNO as SAP_Delivery_No
+,a.THU_Dt_THU_ID
+,a.THU_Dt_THU_Desc
+,a.THU_Dt_THU_SerNo
+,a.thu_SerNo_dt_Item_Code
+,a.thu_SerNo_dt_Item_Desc
+,a.thu_SerNo_dt_Qty
+,a.thu_SerNo_dt_Master_UOM
+,a.thu_SerNo_dt_Batch_Number
+,a.thu_SerNo_dt_Lot_Number
+,a.thu_SerNo_dt_UID_SerNo
+,a.thu_SerNo_dt_Pri_RefDocNo
+,a.thu_SerNo_dt_Pri_RefDocDate
+,a.thu_SerNo_dt_Item_SlNo
+,a.THU_Dt_THU_Class
+,a.THU_Dt_THU_Account
+,a.THU_Dt_Weight
+,a.THU_Dt_Weight_UOM
+,a.THU_Dt_THU_Space
+,a.THU_Dt_Length
+,a.THU_Dt_Breadth
+,a.THU_Dt_Height
+,a.THU_Dt_UOM
+,a.THU_Dt_Volume
+,a.THU_Dt_Volume_UOM
+,a.THU_Dt_UID_Serial_No
+,a.THU_Dt_SU
+,a.THU_Dt_Cost
+,a.THU_Dt_Tracking_Number
+,a.THU_Dt_Consolidation_Number
+,a.THU_Dt_Label_ID
+,a.THU_Dt_Label_URL
+,a.THU_Dt_Carrier
+,a.THU_Dt_Service
+,a.THU_Dt_Shipment_ID
+,a.THU_Dt_Item_Sl_No_2
+,a.THU_Dt_THU_Serial_No_2
+,a.THU_Dt_THU_ID_2
+,a.Pack_Execution_No as PACK_Execution_NO, a.Exec_End_Date_Time as WM_Pack_Execution_Date_Time,
+a.status_update as Interfaced_Date_Time,b.wms_oub_cust_type as SAP_Invoice_No,b.wms_oub_consolidation_no as SAP_Invoice_Amt
+from scmdb..pcs_pack_complete_log a
+join wms_outbound_header b on b.wms_oub_prim_rf_dc_no=a.Ord_Dt_Pri_RefDocNO
+where location='MH008P0148' and convert(date,a.Exec_End_Date_Time)=convert(date,'2019-05-02')
+and a.processflag='S'
+order by a.status_update desc

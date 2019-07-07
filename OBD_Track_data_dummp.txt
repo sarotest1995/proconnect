@@ -1,0 +1,448 @@
+select  
+distinct 
+     odohdr.wms_oub_loc_code																'location',  
+     odohdr.wms_oub_ou																		'ou',  
+     odohdr.wms_oub_outbound_ord															'outbound_order_no',  
+     odohdr.wms_oub_orderdate																'order_date',  
+     odohdr.wms_oub_order_type																'order_type',  
+     odohdr.wms_oub_prim_rf_dc_no															'primary_ref_doc_no',  
+     odohdr.wms_oub_prim_rf_dc_typ															'primary_ref_doc_type',  
+     odohdr.wms_oub_prim_rf_dc_date															'primary_ref_doc_date',  
+     odohdr.wms_oub_ob_status																'odo_status',  
+     --cushdr.wms_customer_id      'customer_id',  
+     --cushdr.wms_customer_name     'customer_name',  
+     odohdr.wms_oub_cnsgn_code_shpto														'consignee_code',  
+     odohdr.wms_oub_bill_to_name															'bill_to_name',  
+     odosdtl.wms_oub_sch_item_code															'item_code',  
+     --itmhdr.wms_itm_short_desc     'item_short_description',  
+     odosdtl.wms_oub_sch_masteruomqty_ml													'order_qty',  
+     odosdtl.wms_oub_sch_deliverydate														'delivery_date',  
+     odosdtl.wms_oub_item_lineno															'primary_ref_doc_line_no',  
+     odosdtl.wms_oub_sch_lineno																'primary_ref_doc_sch_no',  
+     wavhdr.wms_wave_no																		'wave_no',  
+     wavhdr.wms_wave_modified_date															'wave_confirm_date',  
+     wavhdr.wms_wave_status																	'wave_status',   
+     piplhdr.wms_pick_pln_no																'pick_list_no',  
+     piplhdr.wms_pick_created_date															'pick_plan_date',  
+     pickplncount.pick_plan_qty																'pick_plan_qty',-- Code added for FE-2237  
+     piplhdr.wms_pick_pln_status															'pick_plan_status',   
+     pipldtl.wms_pick_lot_no																'pick_plan_lot_no',      
+     piplhdr.wms_pick_employee																'pick_plan_employee',  
+     piexhdr.wms_pick_exec_no																'pick_execution_no',  
+     piexhdr.wms_pick_exec_status															'pick_execution_status',   
+     piexhdr.wms_pick_exec_start_date														'pick_execution_start_date',  
+     piexhdr.wms_pick_exec_end_date															'pick_execution_end_date',  
+     piexhdr.wms_pick_employee																'exec_employee',  
+     pickexecount.actual_pick_qty															'actual_pick_qty', -- Code added for FE-2237  
+     piexdtl.wms_pick_staging_id															'actual_staging_id',  
+     piexdtl.wms_pick_su_serial_no															'pick_exec_uid_serial_no',  
+     piexdtl.wms_pick_stock_status															'pick_exec_stock_status',  
+     piexdtl.wms_pick_lot_no																'pick_exec_lot_no',  
+     piexdtl.wms_pick_item_sr_no															'pick_exec_serial_no',  
+     piexdtl.wms_pick_reason_code															'pick_reason_code',  
+     paplhdr.wms_pack_pln_no																'pack_plan_no',  
+     paplhdr.wms_pack_pln_status															'pack_plan_status',   
+     paplhdr.wms_pack_pln_date																'pack_plan_date',  
+     packplncount.pack_plan_qty																'pack_plan_qty', -- Code added for FE-2237  
+     paplhdr.wms_pack_employee																'pack_plan_employee',  
+     paexhdr.wms_pack_exec_no																'pack_execution_no',  
+     paexhdr.wms_pack_exec_status															'pack_execution_status',   
+     paexhdr.wms_pack_exec_start_date														'pack_exec_start_date',  
+     paexhdr.wms_pack_exec_end_date															'pack_exec_end_date',  
+     paexhdr.wms_pack_employee																'pack_exec_employee',  
+     packexecount.pack_qty																	'pack_qty', -- Code added for FE-2237  
+     dishdrts.wms_dispatch_ld_sheet_no														'load_sheet_no',  
+     dishdrts.wms_dispatch_ld_sheet_date													'load_sheet_date',  
+     dishdrts.wms_dispatch_lsp																'lsp_id',  
+     odohdr.wms_oub_ship_point_id															'ship_point',  
+     odohdr.wms_oub_shipment_mode															'shipment_mode',  
+     dishdrts.wms_dispatch_modified_date													'released_time',  
+     dishdrts.wms_dispatch_ld_sheet_status													'load_sheet_status',  
+     ldexhdr.wms_loading_dock																'dock_no',    
+     ldexhdr.wms_loading_employee															'loading_exec_employee',  
+     ldexhdr.wms_loading_exec_no															'loading_execution_no',  
+     ldexhdr.wms_loading_exec_status														'loading_execution_status',  
+     ldexhdr.wms_loading_exec_date															'loading_execution_date',  
+     ldexhdr.wms_loading_veh_type															'loading_exec_vehicle_type',  
+     ldexhdr.wms_loading_veh_no																'loading_exec_vehicle_no',  
+     ldexhdr.wms_laoding_equip_type															'loading_exec_equipment_type',  
+     ldexhdr.wms_laoding_equip_no															'loading_exec_equipment_no',  
+     ldexhdr.wms_loading_container_no														'loading_exec_container_no',  
+     ldexhdr.wms_loading_exec_startdate														'loading_exec_start_date',  
+     ldexhdr.wms_loading_exec_enddate														'loading_exec_end_date',  
+     wavdtl.wms_wave_qty																	'wave_qty', -- Code added for FE-2212  
+     papldtl.wms_pack_plan_qty																'load_pln_sheet_qty', -- Code added for FE-2236  
+     paextdtl.wms_pack_thu_pack_qty															'load_exe_sheet_qty', -- Code added for FE-2236  
+     dispthucount																			'dispatch_qty', -- Code added for FE-2236  
+     thucount.loadthucount																	'loading_qty',-- Code added for FE-2237  
+     -- Code added for FE-2213 Begins  
+     piplemphdr.wms_emp_description															'pick_plan_employee_name',  
+     piexemphdr.wms_emp_description															'pick_exec_employee_name',  
+     paplemphdr.wms_emp_description															'pack_plan_employee_name',  
+     paexemphdr.wms_emp_description															'pack_exec_employee_name',  
+     ldexemphdr.wms_emp_description															'loading_exec_employee_name' --,''
+     --itmhdr.wms_itm_mas_unit      'master_uom'  
+      --Code added for FE-2213 Ends  
+  
+   from wms_outbound_header odohdr(nolock)  
+   left outer join wms_outbound_sch_dtl odosdtl(nolock)  
+   on  ( odosdtl.wms_oub_outbound_ord  = odohdr.wms_oub_outbound_ord  
+     and odosdtl.wms_oub_sch_loc_code  = odohdr.wms_oub_loc_code  
+     and odosdtl.wms_oub_sch_ou    = odohdr.wms_oub_ou  
+	 and odosdtl.wms_oub_sch_loc_code  ='KR027P0183'
+     )  
+   left outer join wms_wave_dtl wavdtl(nolock)  
+   on  ( wavdtl.wms_wave_so_no    = odohdr.wms_oub_prim_rf_dc_no  
+     and wavdtl.wms_wave_loc_code   = odohdr.wms_oub_loc_code  
+     and wavdtl.wms_wave_ou     = odohdr.wms_oub_ou  
+     and wavdtl.wms_wave_so_sr_no   = odosdtl.wms_oub_item_lineno   
+     and wavdtl.wms_wave_so_sch_no   = odosdtl.wms_oub_sch_lineno  
+     and wavdtl.wms_wave_item_code   = odosdtl.wms_oub_sch_item_code  
+	 and wavdtl.wms_wave_loc_code   ='KR027P0183'
+     )  
+   left outer join wms_wave_hdr wavhdr(nolock)  
+   on  ( wavhdr.wms_wave_no     = wavdtl.wms_wave_no  
+     and wavhdr.wms_wave_loc_code   = wavdtl.wms_wave_loc_code  
+     and wavhdr.wms_wave_ou     = wavdtl.wms_wave_ou  
+	 and wavhdr.wms_wave_loc_code  = 'KR027P0183'
+	 and convert(date,wms_wave_date) >= '2019/05/01'
+     )  
+   left outer join wms_pick_plan_dtl pipldtl(nolock)  
+   on  ( pipldtl.wms_pick_wave_no   = wavdtl.wms_wave_no   
+     and pipldtl.wms_pick_loc_code   = wavdtl.wms_wave_loc_code  
+     and pipldtl.wms_pick_pln_ou    = wavdtl.wms_wave_ou  
+     and pipldtl.wms_pick_so_no    = wavdtl.wms_wave_so_no   
+     and pipldtl.wms_pick_so_line_no   = wavdtl.wms_wave_so_sr_no  
+     and pipldtl.wms_pick_sch_lineno   = wavdtl.wms_wave_so_sch_no  
+     and pipldtl.wms_pick_item_code   = wavdtl.wms_wave_item_code  
+	 and pipldtl.wms_pick_loc_code   = 'KR027P0183'  
+     )  
+   left outer join wms_pick_plan_hdr piplhdr(nolock)  
+   on  ( piplhdr.wms_pick_pln_no    = pipldtl.wms_pick_pln_no  
+     and piplhdr.wms_pick_loc_code   = pipldtl.wms_pick_loc_code  
+     and piplhdr.wms_pick_pln_ou    = pipldtl.wms_pick_pln_ou 
+	 and piplhdr.wms_pick_loc_code   = 'KR027P0183' 
+	 and convert(date,wms_pick_pln_date) >= '2019/05/01'
+     )  
+   left outer  join wms_pick_exec_dtl piexdtl(nolock)  
+   on      (        
+      piexdtl.wms_pick_loc_code           =      pipldtl.wms_pick_loc_code   
+     and piexdtl.wms_pick_exec_ou            =      pipldtl.wms_pick_pln_ou      
+     and piexdtl.wms_pick_so_no              =      pipldtl.wms_pick_so_no   
+     and piexdtl.wms_pick_so_line_no         =     pipldtl.wms_pick_so_line_no   
+     and piexdtl.wms_pick_sch_lineno         =     pipldtl.wms_pick_sch_lineno   
+     and piexdtl.wms_pick_item_code          =     pipldtl.wms_pick_item_code   
+     and piexdtl.wms_pick_wave_no            =     pipldtl.wms_pick_wave_no  
+	 and piexdtl.wms_pick_loc_code  = 'KR027P0183' 
+     and isnull(piexdtl.wms_pick_bin_qty,0) > 0  
+   )  
+   left outer join wms_pick_exec_hdr piexhdr(nolock)  
+   on      (      piexhdr.wms_pick_exec_no   =      piexdtl.wms_pick_exec_no  
+        and piexhdr.wms_pick_exec_ou  =      piexdtl.wms_pick_exec_ou  
+        and piexhdr.wms_pick_loc_code  =      piexdtl.wms_pick_loc_code  
+		and piexhdr.wms_pick_loc_code  ='KR027P0183' 
+		and convert(date,wms_pick_exec_date)  >= '2019/05/01'
+     )  
+   left outer join wms_pack_plan_dtl papldtl(nolock)  
+   on  ( piexhdr.wms_pick_exec_no   = papldtl.wms_pack_picklist_no  
+     and piexhdr.wms_pick_loc_code   = papldtl.wms_pack_loc_code  
+     and piexhdr.wms_pick_exec_ou   = papldtl.wms_pack_pln_ou  
+     and piexdtl.wms_pick_so_no    = papldtl.wms_pack_so_no   
+     and piexdtl.wms_pick_so_line_no   = papldtl.wms_pack_so_line_no  
+     and piexdtl.wms_pick_sch_lineno   = papldtl.wms_pack_so_sch_lineno  
+     and piexdtl.wms_pick_item_code   = papldtl.wms_pack_item_code    
+     and isnull(piexdtl.wms_pick_su_serial_no,'##') = isnull(papldtl.wms_pack_packed_from_uid_serno,'##')  
+     and piexdtl.wms_pick_lot_no    = papldtl.wms_pack_lot_no  
+     and piexdtl.wms_pick_item_sr_no   = isnull(papldtl.wms_pack_item_sr_no,'##')  
+	 and piexhdr.wms_pick_loc_code   = 'KR027P0183' 
+     )  
+   left outer join wms_pack_plan_hdr paplhdr(nolock)  
+   on  ( papldtl.wms_pack_pln_no    = paplhdr.wms_pack_pln_no  
+     and papldtl.wms_pack_loc_code   = paplhdr.wms_pack_loc_code  
+     and papldtl.wms_pack_pln_ou    = paplhdr.wms_pack_pln_ou  
+	 and papldtl.wms_pack_loc_code   =  'KR027P0183'
+	 and convert(date,wms_pack_pln_date) >= '2019/05/01'
+     )  
+   left outer join wms_pack_exec_hdr paexhdr(nolock)  
+   on  ( paexhdr.wms_pack_pln_no    = paplhdr.wms_pack_pln_no  
+     and paexhdr.wms_pack_loc_code   = paplhdr.wms_pack_loc_code  
+     and paexhdr.wms_pack_exec_ou   = paplhdr.wms_pack_pln_ou 
+	 and paexhdr.wms_pack_loc_code   ='KR027P0183' 
+	 and convert(date,wms_pack_exec_date) >= '2019/05/01'
+     )  
+   left outer join wms_pack_exec_thu_dtl paextdtl(nolock)  
+   on  ( paextdtl.wms_pack_exec_no   = paexhdr.wms_pack_exec_no  
+     and paextdtl.wms_pack_loc_code   = paexhdr.wms_pack_loc_code  
+     and paextdtl.wms_pack_exec_ou   = paexhdr.wms_pack_exec_ou  
+     and paextdtl.wms_pack_so_no    = papldtl.wms_pack_so_no  
+     and paextdtl.wms_pack_so_line_no  = papldtl.wms_pack_so_line_no  
+     and paextdtl.wms_pack_so_sch_lineno  = papldtl.wms_pack_so_sch_lineno  
+     and paextdtl.wms_pack_lot_no   = papldtl.wms_pack_lot_no  
+     and isnull(paextdtl.wms_pack_uid_ser_no,'##')= isnull(papldtl.wms_pack_uid_sr_no,'##')  
+     and paextdtl.wms_pack_picklist_no  = papldtl.wms_pack_picklist_no  
+	 and paextdtl.wms_pack_loc_code   =  'KR027P0183' 
+     )  
+   left outer join wms_pack_exec_thu_hdr paexthdr(nolock)  
+   on  ( paexthdr.wms_pack_exec_no   = paextdtl.wms_pack_exec_no  
+     and paexthdr.wms_pack_loc_code   = paextdtl.wms_pack_loc_code  
+     and paexthdr.wms_pack_exec_ou   = paextdtl.wms_pack_exec_ou  
+     and paexthdr.wms_pack_thu_id   = paextdtl.wms_pack_thu_id  
+     and paexthdr.wms_pack_thu_sr_no   = paextdtl.wms_pack_thu_ser_no  
+	 and paexthdr.wms_pack_loc_code   ='KR027P0183' 
+	 
+     )  
+   left outer join wms_thu_hdr exthuhdr(nolock)  
+   on  ( exthuhdr.wms_thu_id     = paexthdr.wms_pack_thu_id  
+     and exthuhdr.wms_thu_ou     = paexthdr.wms_pack_exec_ou  
+     )  
+   left outer join wms_dispatch_dtl disdtlts(nolock)--for two step  
+   on  ( paextdtl.wms_pack_exec_no   = disdtlts.wms_dispatch_pack_exec_no  
+     and paextdtl.wms_pack_loc_code   = disdtlts.wms_dispatch_loc_code  
+     and paextdtl.wms_pack_exec_ou   = disdtlts.wms_dispatch_ld_sheet_ou  
+     and isnull(disdtlts.wms_dispatch_exec_stage,'WMS_PACK')= 'WMS_PACK'  
+     and paextdtl.wms_pack_so_no    = disdtlts.wms_dispatch_so_no  
+     and paextdtl.wms_pack_thu_id   = disdtlts.wms_dispatch_thu_id  
+     and paextdtl.wms_pack_thu_ser_no  = disdtlts.wms_dispatch_thu_sr_no  
+	 and paextdtl.wms_pack_loc_code   = 'KR027P0183' 
+     )  
+   left outer join wms_dispatch_hdr dishdrts(nolock)--for two step  
+   on  ( dishdrts.wms_dispatch_ld_sheet_no = disdtlts.wms_dispatch_ld_sheet_no  
+     and dishdrts.wms_dispatch_loc_code  = disdtlts.wms_dispatch_loc_code  
+     and dishdrts.wms_dispatch_ld_sheet_ou = disdtlts.wms_dispatch_ld_sheet_ou  
+	 and dishdrts.wms_dispatch_loc_code  = 'KR027P0183'
+     )  
+   left outer join wms_dispatch_dtl disdtlss(nolock)--for single step  
+   on  ( piexdtl.wms_pick_exec_no   = disdtlss.wms_dispatch_pack_exec_no  
+     and piexdtl.wms_pick_loc_code   = disdtlss.wms_dispatch_loc_code  
+     and piexdtl.wms_pick_exec_ou   = disdtlss.wms_dispatch_ld_sheet_ou  
+     and disdtlss.wms_dispatch_exec_stage = 'WMS_PICK'  
+     and piexdtl.wms_pick_so_no    = disdtlss.wms_dispatch_so_no  
+     and piexdtl.wms_pick_thu_id    = disdtlss.wms_dispatch_thu_id  
+     and piexdtl.wms_pick_thu_serial_no  = disdtlss.wms_dispatch_thu_sr_no  
+     and isnull(piexdtl.wms_pick_su_serial_no,'##') = isnull(disdtlss.wms_dispatch_uid_serial_no,isnull(piexdtl.wms_pick_su_serial_no,'##'))-- Code modified for FE-2236  
+	 and piexdtl.wms_pick_loc_code   = 'KR027P0183'
+     )  
+   left outer join wms_dispatch_hdr dishdrss(nolock)--for two step  
+   on  ( dishdrss.wms_dispatch_ld_sheet_no = disdtlss.wms_dispatch_ld_sheet_no  
+     and dishdrss.wms_dispatch_loc_code  = disdtlss.wms_dispatch_loc_code  
+     and dishdrss.wms_dispatch_ld_sheet_ou = disdtlss.wms_dispatch_ld_sheet_ou
+	 and dishdrss.wms_dispatch_loc_code  ='KR027P0183'  
+     )  
+   left outer join wms_loading_plan_hdr ldplhdr(nolock)  
+   on  ( ldplhdr.wms_loading_ld_sheet_no  = isnull(dishdrts.wms_dispatch_ld_sheet_no,dishdrss.wms_dispatch_ld_sheet_no)  
+     and ldplhdr.wms_loading_loc_code  = isnull(dishdrts.wms_dispatch_loc_code,dishdrss.wms_dispatch_loc_code)  
+     and ldplhdr.wms_loading_ld_sheet_ou  = isnull(dishdrts.wms_dispatch_ld_sheet_ou,dishdrss.wms_dispatch_ld_sheet_ou)  
+	 and ldplhdr.wms_loading_loc_code = 'KR027P0183'  
+     )  
+   left outer join wms_loading_plan_dtl ldpldtl(nolock)  
+   on  ( ldpldtl.wms_loading_ld_sheet_no  = ldplhdr.wms_loading_ld_sheet_no  
+     and ldpldtl.wms_loading_loc_code  = ldplhdr.wms_loading_loc_code  
+     and ldpldtl.wms_loading_ld_sheet_ou  = ldplhdr.wms_loading_ld_sheet_ou 
+	 and ldpldtl.wms_loading_loc_code = 'KR027P0183'   
+     )  
+   left outer join  wms_loading_exec_hdr ldexhdr(nolock)  
+   on  ( ldexhdr.wms_loading_ld_sheet_no  = ldplhdr.wms_loading_ld_sheet_no  
+     and ldexhdr.wms_loading_loc_code  = ldplhdr.wms_loading_loc_code  
+     and ldexhdr.wms_loading_exec_ou   = ldplhdr.wms_loading_ld_sheet_ou 
+	 and ldexhdr.wms_loading_loc_code  = 'KR027P0183'    
+     )  
+   left outer join wms_loading_exec_dtl ldexdtl(nolock)  
+   on  ( ldexdtl.wms_loading_exec_no   = ldexhdr.wms_loading_exec_no  
+     and ldexdtl.wms_loading_loc_code  = ldexhdr.wms_loading_loc_code  
+     and ldexdtl.wms_loading_exec_ou   = ldexhdr.wms_loading_exec_ou  
+     and ldexdtl.wms_loading_lineno   = ldpldtl.wms_loading_ld_sheet_lineno  
+     and ldexdtl.wms_loading_so_no   = ldpldtl.wms_loading_so_no  
+     and ldexdtl.wms_loading_thu_id   = ldpldtl.wms_loading_thu_id  
+     and ldexdtl.wms_loading_thu_sr_no  = ldpldtl.wms_loading_thu_sr_no 
+	 and ldexdtl.wms_loading_loc_code  = 'KR027P0183' 
+     )  
+  -- left outer join wms_item_hdr itmhdr(nolock)  
+  -- on  ( itmhdr.wms_itm_code     = odosdtl.wms_oub_sch_item_code  
+  --   and itmhdr.wms_itm_ou     = odohdr.wms_oub_ou  
+	 --and itmhdr.wms_itm_customer = '0148'
+  -- )  
+  -- left outer join wms_customer_hdr cushdr(nolock)  
+  -- on  ( cushdr.wms_customer_id    = itmhdr.wms_itm_customer  
+  --   and cushdr.wms_customer_ou    = odohdr.wms_oub_ou
+	 --and cushdr.wms_customer_id    =  '0148'   
+  -- )  
+   -- Code added for FE-2213 Begins  
+   left outer join wms_employee_hdr piplemphdr(nolock)  
+   on  ( piplemphdr.wms_emp_employee_code = piplhdr.wms_pick_employee  
+     and piplemphdr.wms_emp_ou    = odohdr.wms_oub_ou  
+     )  
+   left outer join wms_employee_hdr piexemphdr(nolock)  
+   on  ( piexemphdr.wms_emp_employee_code = piexhdr.wms_pick_employee  
+     and piexemphdr.wms_emp_ou    = odohdr.wms_oub_ou  
+     )  
+   left outer join wms_employee_hdr paplemphdr(nolock)  
+   on  ( paplemphdr.wms_emp_employee_code = paplhdr.wms_pack_employee  
+     and paplemphdr.wms_emp_ou    = odohdr.wms_oub_ou  
+     )  
+   left outer join wms_employee_hdr paexemphdr(nolock)  
+   on  ( paexemphdr.wms_emp_employee_code = paexhdr.wms_pack_employee  
+     and paexemphdr.wms_emp_ou    = odohdr.wms_oub_ou  
+     )  
+   left outer join wms_employee_hdr ldexemphdr(nolock)  
+   on  ( ldexemphdr.wms_emp_employee_code  = ldexhdr.wms_loading_employee  
+     and ldexemphdr.wms_emp_ou     = odohdr.wms_oub_ou  
+     )  
+    
+   left outer join  (select   
+          sum(isnull(plncnt.wms_pick_bin_qty,0)) 'pick_plan_qty',  
+          plncnt.wms_pick_pln_no     'pln_no',  
+          plncnt.wms_pick_loc_code    'loccode',  
+          plncnt.wms_pick_pln_ou     'pln_ou',  
+          plncnt.wms_pick_item_code    'item_code'  
+        from wms_pick_plan_dtl  plncnt(nolock), wms_pick_plan_hdr hdr(nolock)       
+        where plncnt.wms_pick_loc_code  =  hdr.wms_pick_loc_code  
+        and     plncnt.wms_pick_pln_ou   =  hdr.wms_pick_pln_ou   
+        and  plncnt.wms_pick_pln_no   =  hdr.wms_pick_pln_no    
+		and plncnt.wms_pick_loc_code   ='KR027P0183' 
+        group by plncnt.wms_pick_pln_no,plncnt.wms_pick_loc_code,plncnt.wms_pick_pln_ou,plncnt.wms_pick_item_code  
+        ) as pickplncount  
+   on  (  pickplncount.pln_no       = pipldtl.wms_pick_pln_no  
+     and pickplncount.loccode      = pipldtl.wms_pick_loc_code  
+     and pickplncount.pln_ou       = pipldtl.wms_pick_pln_ou  
+     and pickplncount.item_code      = pipldtl.wms_pick_item_code  
+    )   
+   left outer join  (select   
+          sum(isnull(execnt.wms_pick_bin_qty,0)) 'actual_pick_qty',  
+          execnt.wms_pick_exec_no     'exe_no',  
+          execnt.wms_pick_loc_code    'loccode',  
+          execnt.wms_pick_exec_ou     'exe_ou',  
+          execnt.wms_pick_item_code    'item_code'  
+        from  wms_pick_exec_dtl  execnt(nolock), wms_pick_exec_hdr hdr(nolock)       
+        where execnt.wms_pick_loc_code  =  hdr.wms_pick_loc_code  
+        and     execnt.wms_pick_exec_ou   =  hdr.wms_pick_exec_ou   
+        and  execnt.wms_pick_exec_no   =  hdr.wms_pick_exec_no  
+		and execnt.wms_pick_loc_code  ='KR027P0183'    
+        group by execnt.wms_pick_exec_no,execnt.wms_pick_loc_code,execnt.wms_pick_exec_ou,execnt.wms_pick_item_code  
+        ) as pickexecount  
+   on  (  pickexecount.exe_no       = piexdtl.wms_pick_exec_no  
+     and pickexecount.loccode      = piexdtl.wms_pick_loc_code  
+     and pickexecount.exe_ou       = piexdtl.wms_pick_exec_ou  
+     and pickexecount.item_code      = piexdtl.wms_pick_item_code  
+    )   
+   left outer join  (select   
+          sum(isnull(plncnt.wms_pack_plan_qty,0)) 'pack_plan_qty',  
+          plncnt.wms_pack_pln_no     'pln_no',  
+          plncnt.wms_pack_loc_code    'loccode',  
+          plncnt.wms_pack_pln_ou     'pln_ou',  
+          plncnt.wms_pack_item_code    'item_code'  
+        from wms_pack_plan_dtl  plncnt(nolock), wms_pack_plan_hdr hdr(nolock)       
+        where plncnt.wms_pack_loc_code  =  hdr.wms_pack_loc_code  
+        and     plncnt.wms_pack_pln_ou   =  hdr.wms_pack_pln_ou   
+        and  plncnt.wms_pack_pln_no   =  hdr.wms_pack_pln_no  
+		and plncnt.wms_pack_loc_code  ='KR027P0183'  
+        group by plncnt.wms_pack_pln_no,plncnt.wms_pack_loc_code,plncnt.wms_pack_pln_ou,plncnt.wms_pack_item_code  
+        ) as packplncount  
+   on  (  packplncount.pln_no       = papldtl.wms_pack_pln_no  
+     and packplncount.loccode      = papldtl.wms_pack_loc_code  
+     and packplncount.pln_ou       = papldtl.wms_pack_pln_ou  
+     and packplncount.item_code      = papldtl.wms_pack_item_code  
+    )   
+   left outer join  (select  
+          sum(isnull(execnt.wms_pack_thu_pack_qty,0)) 'pack_qty',  
+          execnt.wms_pack_exec_no     'exe_no',  
+          execnt.wms_pack_loc_code    'loccode',  
+          execnt.wms_pack_exec_ou     'exe_ou',  
+          execnt.wms_pack_thu_item_code    'item_code'  
+        from  wms_pack_exec_thu_dtl  execnt(nolock), wms_pack_exec_hdr hdr(nolock)       
+        where execnt.wms_pack_loc_code  =  hdr.wms_pack_loc_code  
+        and     execnt.wms_pack_exec_ou   =  hdr.wms_pack_exec_ou   
+        and  execnt.wms_pack_exec_no   =  hdr.wms_pack_exec_no 
+		and execnt.wms_pack_loc_code  ='KR027P0183'
+		   
+        group by execnt.wms_pack_exec_no,execnt.wms_pack_loc_code,execnt.wms_pack_exec_ou,execnt.wms_pack_thu_item_code  
+        ) as packexecount  
+   on  (  packexecount.exe_no       = paextdtl.wms_pack_exec_no  
+     and packexecount.loccode      = paextdtl.wms_pack_loc_code  
+     and packexecount.exe_ou       = paextdtl.wms_pack_exec_ou  
+     and packexecount.item_code      = paextdtl.wms_pack_thu_item_code  
+	 and packexecount.loccode = 'KR027P0183' 
+    )  
+  
+  
+   left join (   select  distinct  
+         count((wms_dispatch_thu_sr_no))    'dispthucount',  
+         disp.wms_dispatch_so_no      'so_no',  
+         disp.wms_dispatch_ld_sheet_no    'load_sheet'  
+       from   
+         wms_dispatch_dtl disp(nolock)  
+       left outer join wms_pack_exec_thu_hdr pk_thu(nolock)  
+       on  ( disp.wms_dispatch_loc_code   = pk_thu.wms_pack_loc_code  
+         and disp.wms_dispatch_ld_sheet_ou  = pk_thu.wms_pack_exec_ou  
+         and disp.wms_dispatch_thu_sr_no   = pk_thu.wms_pack_thu_sr_no  
+         and disp.wms_dispatch_pack_exec_no  = pk_thu.wms_pack_exec_no  
+		 and disp.wms_dispatch_loc_code ='KR027P0183'
+		 
+         )  
+		 
+       group by disp.wms_dispatch_ld_sheet_no,disp.wms_dispatch_so_no  
+      ) thuinfo  
+   on   (        
+       thuinfo.so_no         = isnull(disdtlts.wms_dispatch_so_no,disdtlss.wms_dispatch_so_no)  
+      and thuinfo.load_sheet        = isnull(disdtlts.wms_dispatch_ld_sheet_no,disdtlss.wms_dispatch_ld_sheet_no)  
+      )  
+   left join ( select   
+         count((wms_dispatch_thu_sr_no))    'uidcount',  
+         disp.wms_dispatch_so_no      'so_no',  
+         disp.wms_dispatch_ld_sheet_no    'load_sheet'  
+       from wms_dispatch_hdr dishdr(nolock),  
+         wms_dispatch_dtl disp(nolock)  
+       left outer join wms_pack_exec_uid_hdr pk_uid(nolock)  
+       on  ( disp.wms_dispatch_loc_code   = pk_uid.wms_pack_loc_code  
+         and disp.wms_dispatch_ld_sheet_ou  = pk_uid.wms_pack_exec_ou  
+         and disp.wms_dispatch_thu_id   = pk_uid.wms_pack_uid_id  
+         and disp.wms_dispatch_thu_sr_no   = pk_uid.wms_pack_uid_sr_no  
+         and disp.wms_dispatch_pack_exec_no  = pk_uid.wms_pack_exec_no  
+		 and disp.wms_dispatch_loc_code ='KR027P0183'
+         )  
+       --where disp.wms_dispatch_loc_code     = dishdr.wms_dispatch_loc_code  
+       --and  disp.wms_dispatch_ld_sheet_ou    = dishdr.wms_dispatch_ld_sheet_ou 
+	    where convert(date,dishdr.wms_dispatch_ld_sheet_date) >= '2019/05/01'
+       group by disp.wms_dispatch_ld_sheet_no,disp.wms_dispatch_so_no,wms_pack_uid_weight_uom  
+      ) uidinfo  
+   on   (        
+       uidinfo.so_no         = isnull(disdtlts.wms_dispatch_so_no,disdtlss.wms_dispatch_so_no)  
+      and uidinfo.load_sheet        = isnull(disdtlts.wms_dispatch_ld_sheet_no,disdtlss.wms_dispatch_ld_sheet_no)  
+      )      
+   left join ( select   
+         count((wms_dispatch_thu_sr_no))    'pick_thucount',  
+         disp.wms_dispatch_so_no      'so_no',  
+         disp.wms_dispatch_ld_sheet_no    'load_sheet'  
+       from wms_dispatch_hdr dishdr(nolock),  
+         wms_dispatch_dtl disp(nolock)  
+       --where disp.wms_dispatch_loc_code     = dishdr.wms_dispatch_loc_code  
+       --and  disp.wms_dispatch_ld_sheet_ou    = dishdr.wms_dispatch_ld_sheet_ou  
+	   where disp.wms_dispatch_loc_code = 'KR027P0183'
+	   and convert(date,dishdr.wms_dispatch_ld_sheet_date) >= '2019/05/01'
+       group by disp.wms_dispatch_ld_sheet_no,disp.wms_dispatch_so_no,wms_dispatch_thu_wt_uom  
+        ) as thuwt_pick  
+   on   ( thuwt_pick.so_no        = isnull(disdtlts.wms_dispatch_so_no,disdtlss.wms_dispatch_so_no)  
+      and thuwt_pick.load_sheet       = isnull(disdtlts.wms_dispatch_ld_sheet_no,disdtlss.wms_dispatch_ld_sheet_no)  
+      )  
+   left outer join  (select count('X')         'loadthucount',  
+          cnt.wms_loading_exec_no   'excno',  
+          cnt.wms_loading_loc_code  'loccode',  
+          cnt.wms_loading_exec_ou   'ou',  
+          hdrcnt.wms_loading_ld_sheet_no   'dispatchno'  
+        from wms_loading_exec_dtl cnt(nolock), wms_loading_exec_hdr hdrcnt(nolock)       
+        where cnt.wms_loading_loc_code  =  hdrcnt.wms_loading_loc_code  
+        and     cnt.wms_loading_exec_ou   =  hdrcnt.wms_loading_exec_ou  
+		and cnt.wms_loading_loc_code =  'KR027P0183'  
+		and convert(date,hdrcnt.wms_loading_exec_date) >= '2019/05/01'
+        group by cnt.wms_loading_exec_no,cnt.wms_loading_loc_code,cnt.wms_loading_exec_ou,hdrcnt.wms_loading_ld_sheet_no  
+        ) as thucount  
+   on  (      thucount.excno      = ldexhdr.wms_loading_exec_no  
+     and thucount.loccode     = ldexhdr.wms_loading_loc_code  
+     and thucount.ou       = ldexhdr.wms_loading_exec_ou  
+     and thucount.dispatchno     = ldexhdr.wms_loading_ld_sheet_no  
+    )  
+
+	where odohdr.wms_oub_loc_code = 'KR027P0183'
+	and convert(date,wms_oub_created_date) >= '2019/05/01'
+	--and odosdtl.wms_oub_sch_item_code = 'P8A00016'
+
+	order by odohdr.wms_oub_orderdate

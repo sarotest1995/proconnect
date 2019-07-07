@@ -1,0 +1,3 @@
+FTP URL: ftp://104.211.243.49/al/Live/
+User ID: all
+Password: sep@2019

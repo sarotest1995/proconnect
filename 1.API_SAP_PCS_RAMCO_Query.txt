@@ -1,0 +1,40 @@
+
+
+---*** To check the count of order received from SAP to PCS and PCS to RAMCO for inbound(ASN) and outbound(SO)  ****----
+select * from Service_Logs where Client_Name='ASHOKLEYLAND'and Error_Massage like '%System Exception%' 
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+order by created_date desc
+
+select * from Service_Logs where Client_Name='ASHOKLEYLAND'and Error_Massage like '%Ship%'
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+order by created_date desc
+
+select * from Service_Logs where Client_Name='ASHOKLEYLAND'and Error_Massage like '%Item Code is not valid%'
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+order by created_date desc
+
+select * from Service_Logs where Client_Name='ASHOKLEYLAND'and Error_Massage like '%UOM%'
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+order by created_date desc
+
+select * from Service_Logs where Client_Name='ASHOKLEYLAND'and Error_Massage like '%Another%'
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+order by created_date desc
+
+select  count(distinct JSON_VALUE(convert(nvarchar(max), Client_Json),'$.OrderNumber')) as SO_SAP_To_PCS from Client_Service_Log (nolock)  where Client_Name='ASHOKLEYLAND' and Service_Name='SO' 
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+select count(distinct JSON_VALUE(convert(nvarchar(max), Client_Request_Json),'$.OrderNumber')) as SO_PCS_TO_RAMCO from Service_Logs where Client_Name='ASHOKLEYLAND' and Client_Service='SO' 
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+
+select count(distinct JSON_VALUE(convert(nvarchar(max), Client_Json),'$.OrderNumber')) as ASN_SAP_To_PCS from Client_Service_Log (nolock)  where Client_Name='ASHOKLEYLAND' and Service_Name='ASN' 
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+select count(distinct JSON_VALUE(convert(nvarchar(max), Client_Request_Json),'$.OrderNumber')) as ASN_PCS_TO_RAMCO from Service_Logs where Client_Name='ASHOKLEYLAND' and Client_Service='ASN' 
+and CONVERT(date,created_date)=CONVERT(date,'2019-05-15')
+
+
+
+
+---*** to check in Json format ***-------
+
+
+select * from Client_Service_Log where Client_Json like '%420192696%' and Service_Name='SO'

@@ -1,0 +1,328 @@
+
+select	distinct
+		idohdr.wms_inb_ou							'ou',
+		idohdr.wms_inb_loc_code						'location',		
+		lochdr.wms_loc_desc							'location_description',
+       	idohdr.wms_inb_orderno						'inbound_order_no',
+       	idohdr.wms_inb_orderdate					'order_date',
+       	idohdr.wms_inb_type							'inbound_order_type',
+       	idohdr.wms_inb_refdocno						'primary_ref_docno',
+		idohdr.wms_inb_refdoctype					'primary_ref_doc_type',
+       	idohdr.wms_inb_refdocdate					'primary_ref_doc_date',
+       	asnhdr.wms_asn_no							'asn_no',
+       	asnhdr.wms_asn_date							'asn_date',
+		asnhdr.wms_asn_sent_by						'Order_Type',
+       	idohdr.wms_inb_custcode						'customer',
+		cushdr.wms_customer_name					'customer_name',
+       	idohdr.wms_inb_vendorcode					'vendor',
+       	venhdr.wms_vendor_name						'vendor_name',
+		asnhdr.wms_asn_dlv_date						'delivery_date',
+		asnhdr.wms_asn_shp_ref_typ					'asn_ship_ref_doc_type',
+		asnhdr.wms_asn_shp_ref_no					'asn_ship_ref_doc_no',
+		idohdr.wms_inb_status						'order_status',
+       	idodtl.wms_inb_item_code					'item_code',
+		idodtl.wms_inb_batch_no						'batch_no',
+		idodtl.wms_inb_cust_item_code				'Customer_Item_Code',
+		itmhdr.wms_itm_long_desc					'item_long_description',
+		itmhdr.wms_itm_short_desc					'item_short_description',
+       	idodtl.wms_inb_master_uom_qty				'order_qty',
+       	itmhdr.wms_itm_mas_unit						'master_uom',
+       	grplhdr.wms_gr_pln_no						'gr_plan_no',		
+       	grplhdr.wms_gr_created_date					'gr_planned_date_time',		       	
+       	grplncount.gr_planned_qty					'gr_planned_qty', -- Code added for FE-2233
+		grplhdr.wms_gr_pln_status					'gr_plan_status',
+       	grplhdr.wms_gr_employee						'gr_plan_employee',
+		grplhdr.wms_gr_employee						'gr_exec_employee',			 					
+       	grexhdr.wms_gr_exec_no						'gr_execution_no',	
+		grexhdr.wms_gr_exec_status					'gr_exec_status',	
+       	grexhdr.wms_gr_start_date					'gr_execution_start_date_time',		
+       	grexhdr.wms_gr_end_date						'gr_execution_end_date_time',       	
+       	grexecount.accepted_qty						'accepted_qty', -- Code added for FE-2233
+       	grexecount.rejected_qty						'rejected_qty', -- Code added for FE-2233
+		pwplhdr.wms_pway_pln_no						'putaway_plan_no',      	
+		pwplhdr.wms_pway_created_date				'putaway_plan_date_time',         	
+		pwayplncount.pway_planned_qty				'planned_putaway_qty', -- Code added for FE-2233
+		pwplhdr.wms_pway_pln_status					'putaway_plan_status',
+       	pwpldtl.wms_pway_allocated_bin				'allocated_bin',
+       	pwpldtl.wms_pway_allocated_staging			'allocated_staging_id',		       	
+		pwplhdr.wms_pway_employee_id				'putaway_plan_employee',
+		pwexhdr.wms_pway_employee_id				'putaway_exec_employee',     	
+		pwexhdr.wms_pway_exec_no					'putaway_execution_no',
+		pwexhdr.wms_pway_exec_status				'putaway_execution_status',
+		pwexhdr.wms_pway_exec_start_date			'putaway_execution_start_date_time',
+		pwexhdr.wms_pway_exec_end_date				'putaway_execution_end_date_time',	
+       	pwayexecount.actual_putaway_qty				'actual_putaway_qty', -- Code added for FE-2233
+       	pwexdtl.wms_pway_actual_bin					'actual_bin',
+       	wms_pway_actual_staging						'actual_staging_id',		
+       	pwexdtl.wms_pway_reason						'putaway_reason',
+		ulplnhdr.wms_unload_pln_no					'unload_pln_no',
+		ulplnhdr.wms_unload_pln_date				'unload_pln_date',
+		ulplnhdr.wms_unload_pln_status				'unload_pln_status',
+		ulplnref.wms_unload_ref_no					'unload_pln_ref_no',
+		ulexhdr.wms_unload_exec_no					'unload_exec_no',
+		ulexhdr.wms_unload_exec_date				'unload_exec_date',
+		ulexhdr.wms_unload_exec_status				'unload_exec_status',
+		-- Code added for FE-2213 Begins
+		-- Code added and commented for FE-2231 Begins
+		--ulplnthu.wms_unload_thu_quantity			'unload_pln_thuqty',
+		--ulexethu.wms_unload_thu_quantity			'unload_exe_thuqty',
+		asndtl.wms_asn_qty							'unload_pln_thuqty',	
+		asndtl.wms_asn_qty							'unload_exe_thuqty',
+		-- Code added and commented for FE-2231 Ends
+		grplemphdr.wms_emp_description				'gr_plan_employee_name',
+		grexemphdr.wms_emp_description				'gr_exec_employee_name',
+		pwplemphdr.wms_emp_description				'putaway_plan_employee_name',
+		pwexemphdr.wms_emp_description				'putaway_exec_employee_name',
+		idodtl.wms_inb_recdqty						'total_recieved_qty'
+		-- Code added for FE-2213 Ends
+
+from	wms_inbound_item_detail idodtl(nolock)
+left outer join	wms_inbound_header idohdr(nolock)
+on		(	idodtl.wms_inb_orderno				=	idohdr.wms_inb_orderno
+		and idodtl.wms_inb_loc_code				=	idohdr.wms_inb_loc_code
+		and idodtl.wms_inb_ou					=	idohdr.wms_inb_ou
+		and right(idodtl.wms_inb_loc_code,4)				=	'0183'
+		)
+left outer join	wms_item_hdr itmhdr(nolock)
+on		(	itmhdr.wms_itm_code					=	idodtl.wms_inb_item_code
+		and itmhdr.wms_itm_ou					=	idodtl.wms_inb_ou
+		)
+left outer join	wms_customer_hdr cushdr(nolock)
+on		(	cushdr.wms_customer_id				=	itmhdr.wms_itm_customer
+		and cushdr.wms_customer_ou				=	itmhdr.wms_itm_ou
+		)	
+left outer join wms_vendor_hdr venhdr(nolock)
+on		(	venhdr.wms_vendor_id				=	idohdr.wms_inb_vendorcode
+		and venhdr.wms_vendor_ou				=	idohdr.wms_inb_ou
+		)	
+left outer join	wms_loc_location_hdr lochdr(nolock)
+on		(	lochdr.wms_loc_code					=	idohdr.wms_inb_loc_code
+		and lochdr.wms_loc_ou					=	idohdr.wms_inb_ou
+		and right(lochdr.wms_loc_code,4)					=	'0183'
+		)		
+left outer join wms_asn_header asnhdr(nolock)
+on		(	asnhdr.wms_asn_ib_order				=	idohdr.wms_inb_orderno
+		and asnhdr.wms_asn_location				=	idohdr.wms_inb_loc_code
+		and asnhdr.wms_asn_ou					=	idohdr.wms_inb_ou
+		and right(asnhdr.wms_asn_location,4)				=	'0183'
+		)
+-- Code added for FE-2213 Begins
+left outer join wms_asn_detail asndtl(nolock)
+on		(	asndtl.wms_asn_no					=	asnhdr.wms_asn_no
+		and asndtl.wms_asn_location				=	asnhdr.wms_asn_location
+		and asndtl.wms_asn_ou					=	asnhdr.wms_asn_ou
+		and asndtl.wms_po_lineno				=	idodtl.wms_inb_lineno
+		and right(asndtl.wms_asn_location,4)				=	'0183'
+		)
+-- Code added for FE-2213 Ends
+left outer join	wms_gr_plan_dtl grplhdr(nolock)
+on		(	grplhdr.wms_gr_asn_no				=	asnhdr.wms_asn_no
+		and grplhdr.wms_gr_loc_code				=	asnhdr.wms_asn_location
+		and grplhdr.wms_gr_pln_ou				=	asnhdr.wms_asn_ou
+		and right(grplhdr.wms_gr_loc_code,4)				=	'0183'
+		)
+-- Code added for FE-2213 Begins
+left outer join wms_employee_hdr grplemphdr(nolock)
+on		(	grplemphdr.wms_emp_employee_code	=	grplhdr.wms_gr_employee
+		and grplemphdr.wms_emp_ou				=	grplhdr.wms_gr_pln_ou
+		)
+-- Code added for FE-2213 Ends
+left outer join wms_gr_po_item_dtl grpldtl(nolock)
+on		(	grpldtl.wms_gr_pln_no				=	grplhdr.wms_gr_pln_no
+		and grpldtl.wms_gr_loc_code				=	grplhdr.wms_gr_loc_code
+		and grpldtl.wms_gr_pln_ou				=	grplhdr.wms_gr_pln_ou
+		and grpldtl.wms_gr_asn_line_no			=	asndtl.wms_asn_lineno
+		and right(grpldtl.wms_gr_loc_code,4)				=	'0183'
+		)
+left outer join wms_gr_exec_dtl grexhdr(nolock)
+on		(	grexhdr.wms_gr_pln_no				=	grplhdr.wms_gr_pln_no
+		and grexhdr.wms_gr_loc_code				=	grplhdr.wms_gr_loc_code
+		and grexhdr.wms_gr_exeC_ou				=	grplhdr.wms_gr_pln_ou
+		and right(grexhdr.wms_gr_loc_code,4)				=	'0183'
+		)
+-- Code added for FE-2213 Begins
+left outer join wms_employee_hdr grexemphdr(nolock)
+on		(	grexemphdr.wms_emp_employee_code	=	grexhdr.wms_gr_emp
+		and grexemphdr.wms_emp_ou				=	grexhdr.wms_gr_pln_ou
+		)
+-- Code added for FE-2213 Ends
+left outer join wms_gr_exec_item_dtl grexdtl(nolock)
+on		(	grexhdr.wms_gr_exec_no				=	grexdtl.wms_gr_exec_no
+		and grexhdr.wms_gr_loc_code				=	grexdtl.wms_gr_loc_code
+		and grexhdr.wms_gr_exec_ou				=	grexdtl.wms_gr_exec_ou
+		and grexdtl.wms_gr_exe_asn_line_no		=	asndtl.wms_asn_lineno	
+		and right(grexhdr.wms_gr_loc_code,4)				=	'0183'	
+		)
+left outer join wms_put_plan_item_dtl pwpldtl(nolock)
+on		(	pwpldtl.wms_pway_loc_code			=	grexdtl.wms_gr_loc_code
+		and pwpldtl.wms_pway_pln_ou				=	grexdtl.wms_gr_exec_ou
+		and pwpldtl.wms_pway_gr_no				=	grexhdr.wms_gr_no
+		and pwpldtl.wms_pway_gr_lineno			=	grexdtl.wms_gr_lineno
+		and	right(pwpldtl.wms_pway_loc_code,4)			=	'0183'
+		)		
+left outer join wms_putaway_plan_dtl pwplhdr(nolock)
+on		(	pwplhdr.wms_pway_loc_code			=	pwpldtl.wms_pway_loc_code
+		and pwplhdr.wms_pway_pln_no				=	pwpldtl.wms_pway_pln_no
+		and pwplhdr.wms_pway_pln_ou				=	pwpldtl.wms_pway_pln_ou
+		and right(pwplhdr.wms_pway_loc_code,4)			=	'0183'
+		)
+-- Code added for FE-2213 Begins
+left outer join wms_employee_hdr pwplemphdr(nolock)
+on		(	pwplemphdr.wms_emp_employee_code	=	pwplhdr.wms_pway_employee_id
+		and pwplemphdr.wms_emp_ou				=	pwplhdr.wms_pway_pln_ou
+		)
+-- Code added for FE-2213 Ends
+left outer join wms_put_exec_item_dtl pwexdtl(nolock)
+on		(	pwexdtl.wms_pway_loc_code			=	grexdtl.wms_gr_loc_code
+		and pwexdtl.wms_pway_exec_ou			=	grexdtl.wms_gr_exec_ou
+		and pwexdtl.wms_pway_gr_no				=	grexhdr.wms_gr_no
+		and pwexdtl.wms_pway_gr_lineno			=	grexdtl.wms_gr_lineno
+		and	right(pwexdtl.wms_pway_loc_code,4)			=	'0183'
+		)		
+left outer join wms_putaway_exec_dtl pwexhdr(nolock)
+on		(	pwexhdr.wms_pway_loc_code			=	pwexdtl.wms_pway_loc_code
+		and pwexhdr.wms_pway_pln_no				=	pwplhdr.wms_pway_pln_no
+		and pwexhdr.wms_pway_exec_ou			=	pwexdtl.wms_pway_exec_ou
+		and pwexhdr.wms_pway_exec_no			=	pwexdtl.wms_pway_exec_no
+		and right(pwexhdr.wms_pway_loc_code,4)			=	'0183'
+		)
+-- Code added for FE-2213 Begins
+left outer join wms_employee_hdr pwexemphdr(nolock)
+on		(	pwexemphdr.wms_emp_employee_code	=	pwexhdr.wms_pway_employee_id
+		and pwexemphdr.wms_emp_ou				=	pwexhdr.wms_pway_pln_ou
+		)
+-- Code added for FE-2213 Ends
+left outer join wms_unload_pln_reference_dtl ulplnref(nolock)
+on		(	ulplnref.wms_unload_loc_code		=	idohdr.wms_inb_loc_code
+		and ulplnref.wms_unload_ref_no			=	asnhdr.wms_asn_no
+		and ulplnref.wms_unload_pln_ou			=	asnhdr.wms_asn_ou
+		and	right(ulplnref.wms_unload_loc_code,4)		= '0183'
+		)
+left outer join wms_unload_plan_dtl ulplnhdr(nolock)
+on		(	ulplnhdr.wms_unload_loc_code		=	ulplnref.wms_unload_loc_code
+		and ulplnhdr.wms_unload_pln_no			=	ulplnref.wms_unload_pln_no
+		and ulplnhdr.wms_unload_pln_ou			=	ulplnref.wms_unload_pln_ou
+		and right(ulplnhdr.wms_unload_loc_code,4)		=	'0183'
+		)
+-- Code added for FE-2231 Begins
+left outer join wms_unload_pln_thu_dtl ulplnthu(nolock)
+on		(	ulplnhdr.wms_unload_loc_code		=	ulplnthu.wms_unload_loc_code
+		and ulplnhdr.wms_unload_pln_no			=	ulplnthu.wms_unload_pln_no
+		and ulplnhdr.wms_unload_pln_ou			=	ulplnthu.wms_unload_pln_ou
+		and right(ulplnhdr.wms_unload_loc_code,4)		=	'0183'
+		)
+-- Code added for FE-2231 Ends
+left outer join wms_unload_exec_reference_dtl ulexeref(nolock)
+on		(	ulexeref.wms_unload_loc_code		=	idohdr.wms_inb_loc_code
+		and ulexeref.wms_unload_ref_no			=	asnhdr.wms_asn_no
+		and ulexeref.wms_unload_pln_ou			=	asnhdr.wms_asn_ou
+		and right(ulexeref.wms_unload_loc_code,4)		=	'0183'
+		)
+left outer join wms_unload_exec_dtl ulexhdr(nolock)
+on		(	ulexhdr.wms_unload_loc_code			=	ulexeref.wms_unload_loc_code
+		and ulexhdr.wms_unload_exec_no			=	ulexeref.wms_unload_exec_no
+		and ulexhdr.wms_unload_exec_ou			=	ulexeref.wms_unload_exec_ou
+		and right(ulexhdr.wms_unload_loc_code,4)			=	'0183'
+		)
+-- Code added for FE-2231 Begins
+left outer join wms_unload_exec_thu_dtl ulexethu(nolock)
+on		(	ulexhdr.wms_unload_loc_code			=	ulexethu.wms_unload_loc_code
+		and ulplnhdr.wms_unload_pln_no			=	ulexethu.wms_unload_pln_no
+		and ulexhdr.wms_unload_exec_no			=	ulexethu.wms_unload_exec_no
+		and ulexhdr.wms_unload_pln_ou			=	ulexethu.wms_unload_pln_ou
+		and right(ulexhdr.wms_unload_loc_code,4)			=	'0183'
+		)
+-- Code added for FE-2231 Ends
+-- Code added for FE-2233 Begins
+left outer join		(select	
+							sum(isnull(plncnt.wms_gr_qty,0))			'gr_planned_qty',
+							plncnt.wms_gr_pln_no			'pln_no',
+							plncnt.wms_gr_loc_code		    'loccode',
+							plncnt.wms_gr_pln_ou			'pln_ou',
+							plncnt.wms_gr_item				'item_code'
+					from	wms_gr_po_item_dtl  plncnt(nolock), wms_gr_plan_dtl hdr(nolock)					
+					where	plncnt.wms_gr_loc_code			=	 hdr.wms_gr_loc_code
+					and     plncnt.wms_gr_pln_ou			=	 hdr.wms_gr_pln_ou 
+					and		plncnt.wms_gr_pln_no			=	 hdr.wms_gr_pln_no
+					and		right(plncnt.wms_gr_loc_code,4)			=	'0183'	 
+					group by plncnt.wms_gr_pln_no,plncnt.wms_gr_loc_code,plncnt.wms_gr_pln_ou,plncnt.wms_gr_item
+					) as	grplncount
+on  (		grplncount.pln_no				   =	grpldtl.wms_gr_pln_no
+		and	grplncount.loccode				   =	grpldtl.wms_gr_loc_code
+		and	grplncount.pln_ou				   =	grpldtl.wms_gr_pln_ou
+		and	grplncount.item_code			   =	grpldtl.wms_gr_item
+		and	right(grplncount.loccode,4)				   =	'0183'
+	) 
+left outer join		(select	
+       						sum(isnull(execnt.wms_gr_acpt_qty,0))		'accepted_qty',
+       						sum(isnull(execnt.wms_gr_rej_qty,0))		'rejected_qty',
+							execnt.wms_gr_exec_no			'exe_no',
+							execnt.wms_gr_loc_code		    'loccode',
+							execnt.wms_gr_exec_ou			'exe_ou',
+							execnt.wms_gr_item				'item_code',
+							execnt.wms_gr_lineno
+					from	wms_gr_exec_item_dtl  execnt(nolock), wms_gr_exec_dtl exehdr(nolock)					
+					where	execnt.wms_gr_loc_code			=	 exehdr.wms_gr_loc_code
+					and     execnt.wms_gr_exec_ou			=	 exehdr.wms_gr_exec_ou 
+					and		execnt.wms_gr_exec_no			=	 exehdr.wms_gr_exec_no	 
+					and		right(execnt.wms_gr_loc_code,4)			=	'0183'
+					group by execnt.wms_gr_exec_no,execnt.wms_gr_loc_code,execnt.wms_gr_exec_ou,execnt.wms_gr_item,execnt.wms_gr_lineno
+					) as	grexecount
+on  (		grexecount.exe_no				   =	grexdtl.wms_gr_exec_no
+		and	grexecount.loccode				   =	grexdtl.wms_gr_loc_code
+		and	grexecount.exe_ou				   =	grexdtl.wms_gr_exec_ou
+		and	grexecount.item_code			   =	grexdtl.wms_gr_item
+		and	grexecount.wms_gr_lineno			=	grexdtl.wms_gr_lineno
+		and	right(grexecount.loccode,4)				   =	'0183'	
+	) 
+left outer join		(select	
+							sum(isnull(plncnt.wms_pway_allocated_qty,0))			'pway_planned_qty',
+							plncnt.wms_pway_pln_no				'pln_no',
+							plncnt.wms_pway_loc_code			'loccode',
+							plncnt.wms_pway_pln_ou				'pln_ou',
+							plncnt.wms_pway_item				'item_code',
+							plncnt.wms_pway_lineno
+					from	wms_put_plan_item_dtl  plncnt(nolock), wms_putaway_plan_dtl hdr(nolock)					
+					where	plncnt.wms_pway_loc_code		=	 hdr.wms_pway_loc_code
+					and     plncnt.wms_pway_pln_ou			=	 hdr.wms_pway_pln_ou 
+					and		plncnt.wms_pway_pln_no			=	 hdr.wms_pway_pln_no
+					and		right(plncnt.wms_pway_loc_code,4)		=	'0183'	 
+					group by plncnt.wms_pway_pln_no,plncnt.wms_pway_loc_code,plncnt.wms_pway_pln_ou,plncnt.wms_pway_item,plncnt.wms_pway_lineno
+					) as	pwayplncount
+on  (		pwayplncount.pln_no				   =	pwpldtl.wms_pway_pln_no
+		and	pwayplncount.loccode			   =	pwpldtl.wms_pway_loc_code
+		and	pwayplncount.pln_ou				   =	pwpldtl.wms_pway_pln_ou
+		and	pwayplncount.item_code			   =	pwpldtl.wms_pway_item
+		and pwayplncount.wms_pway_lineno			=	pwpldtl.wms_pway_lineno
+		and	right(pwayplncount.loccode,4)				=	'0183'
+	) 
+left outer join		(select	
+							sum(isnull(execnt.wms_pway_actual_bin_qty,0))			'actual_putaway_qty',
+							execnt.wms_pway_exec_no				'exe_no',
+							execnt.wms_pway_loc_code			'loccode',
+							execnt.wms_pway_exec_ou				'pln_ou',
+							execnt.wms_pway_item				'item_code',
+							execnt.wms_pway_exec_lineno
+					from	wms_put_exec_item_dtl  execnt(nolock), wms_putaway_exec_dtl hdr(nolock)					
+					where	execnt.wms_pway_loc_code		=	 hdr.wms_pway_loc_code
+					and     execnt.wms_pway_exec_ou			=	 hdr.wms_pway_exec_ou 
+					and		execnt.wms_pway_exec_no			=	 hdr.wms_pway_exec_no	
+					and		right(execnt.wms_pway_loc_code,4)		=	'0183'
+					group by execnt.wms_pway_exec_no,execnt.wms_pway_loc_code,execnt.wms_pway_exec_ou,execnt.wms_pway_item,execnt.wms_pway_exec_lineno
+					) as	pwayexecount
+on  (		pwayexecount.exe_no						=	pwexdtl.wms_pway_exec_no
+		and	pwayexecount.loccode					=	pwexdtl.wms_pway_loc_code
+		and	pwayexecount.pln_ou						=	pwexdtl.wms_pway_exec_ou
+		and	pwayexecount.item_code					=	pwexdtl.wms_pway_item
+		and	pwayexecount.wms_pway_exec_lineno		=	pwexdtl.wms_pway_exec_lineno	
+		and right(pwayexecount.loccode,4)			=	'0183'
+	) 
+-- Code added for FE-2233 ends
+where  idohdr.wms_inb_loc_code = 'KR027P0183' 
+and	convert(date,idohdr.wms_inb_created_date) >= '2019/05/01'
+--and			idodtl.wms_inb_item_code ='P8A00016'
+--select * from wms_inbound_header idohdr(nolock) where convert(date,idohdr.wms_inb_created_date) between '2019/04/05' and '2019/04/08' 
+--and  right(idohdr.wms_inb_loc_code,4) = '0183' 
+
+
+--select * from wms_inbound_item_detail idodtl(nolock) where wms_inb_loc_code ='MH008P0183' and wms_inb_item_code ='P8A00016'

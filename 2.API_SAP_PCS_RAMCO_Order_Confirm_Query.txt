@@ -1,0 +1,22 @@
+
+----*** TO shortout the order details which are not received from SAP to PCS and PCS to RAMCO for inbound(ASN) and outbound(SO) ****-----
+
+select a.Service_Name,JSON_VALUE(convert(nvarchar(max), a.Client_Json),'$.OrderNumber') as Client_Order_No,cast(a.Client_Json as nvarchar(max)) as Client_Json
+,b.OrderNo,cast(b.Client_Request_Json as nvarchar(max)) as Client_Request_Json,max (a.Created_Date) as Created_Date
+,c.wms_oub_outbound_ord as OBD_Number,d.wms_asn_no as ASN_Number
+from SamVaadPro..Client_Service_Log (nolock) a
+left join (
+select JSON_VALUE(convert(nvarchar(max), Client_Request_Json),'$.OrderNumber') as [OrderNo],Client_Request_Json from SamVaadPro..Service_Logs (nolock)
+where Client_Name='ASHOKLEYLAND' and convert(date,Created_Date) between  Convert(char(8),GETDATE (),112) and Convert(char(8),Dateadd(day,1,GETDATE()),112) and Client_Service in ('ASN','SO') 
+)b 
+on JSON_VALUE(convert(nvarchar(max), a.Client_Json),'$.OrderNumber')=b.OrderNo
+left join scmdb..wms_outbound_header (nolock) c on c.wms_oub_prim_rf_dc_no=JSON_VALUE(convert(nvarchar(max), a.Client_Json),'$.OrderNumber')
+left join pcs_mobility..pcsit_asn_vw (nolock) d on d.wms_asn_prefdoc_no=JSON_VALUE(convert(nvarchar(max), a.Client_Json),'$.OrderNumber')
+where a.Client_Name='ASHOKLEYLAND' and
+a.Service_Name in ('ASN','SO') 
+and a.Created_date>= Convert(char(8),GETDATE (),112) and a.Created_date< Convert(char(8),Dateadd(day,1,GETDATE()),112)
+and b.Client_Request_Json is null --and c.wms_oub_outbound_ord is null and d.wms_asn_no is null
+group by a.Service_Name,JSON_VALUE(convert(nvarchar(max), a.Client_Json),'$.OrderNumber'),cast(a.Client_Json as nvarchar(max))
+,b.OrderNo,cast(b.Client_Request_Json as nvarchar(max))
+,c.wms_oub_outbound_ord ,d.wms_asn_no
+order by a.Service_Name,Created_Date desc

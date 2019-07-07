@@ -1,0 +1,58 @@
+SELECT    
+        t.rec_id                               AS Servicetask_recid , --MAX(r.record_id)     AS Log_recordid,
+        TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') AS Servicetask_Createddate,--   t.ref1                                      AS Servicetask_Type,
+        ref2,
+        t.Ref_no                                     AS Servicetask_refno,t.Ref_no,type,
+        loc,
+        MAX(r.RESPONSE_BODY) AS log_Response,           
+        t.STATUS                                    AS Servicetask_status,
+        TO_CHAR(SUBSTR(t.REQUEST_BODY,0,3999))      AS Servicetask_Requestbody,
+        r.CURRDATE                                  AS Log_date,       
+        comp_id       
+FROM
+      (
+          SELECT  ref2  ,EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//PO_Number')  Ref_no,site_id loc,
+          EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//ASN_Type')  type,
+          a.ref1,A.CREATED_DATE,TO_CHAR(a.UPDATED_DATE,'dd-MM-yyyy') UPDATED_DATE,a.comp_id,A.STATUS,A.REQUEST_BODY,a.REC_ID
+          FROM wms.service_task a
+          WHERE --Comp_id = '0027' and
+--          and length(ref2) >=9
+           ref1 in ('GateEntry' ) --and site_id in ('CHE','CHE2','CHE3','AHM1','DEO1','SEC1','VIZ1','VIJ1','KOL1' )
+--          and  EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//ASN_Type')  not in ('Return')
+--           and site_id not in ('SEC1')
+--          and ref2 like 'B5%'
+          and ref2 in ('A032ASNC0000464')
+--and EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//ASN_Type') = 'Import'
+          and created_date >= '01-APR-2019'
+          AND status IN ('Failed')
+      ) t
+left JOIN
+    ( 
+        select --EXTRACTVALUE(xmltype(request_body), '//RedGateEntry//DocumentReference'),a.* 
+        max(CURRDATE)CURRDATE, EXTRACTVALUE(xmltype(request_body), '//RedGateEntry//DocumentReference')  Ref_no, max(record_id)record_id,
+        max(NVL(TO_CHAR(SUBSTR(RESPONSE_BODY,0,3999)),'NA'))RESPONSE_BODY,max(NVL(a.REQUEST_STATUS,'NA'))REQUEST_STATUS
+        from WMS.Service_Request_Outbound a
+        where  additional_info = 'GateEntry'  
+--        and         request_body like '%7175742%'
+         --   and EXTRACTVALUE(xmltype(request_body), '//RedGateEntry//DocumentReference') = 'A013ASNC0000034'
+        group by  EXTRACTVALUE(xmltype(request_body), '//RedGateEntry//DocumentReference')
+    ) r
+ON t.ref2         = r.Ref_no
+--where ref2 in (
+--'B10003282')
+--where type='Import'
+GROUP BY  t.rec_id ,t.ref1 ,ref2,t.Ref_no,loc, TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') ,
+        t.STATUS     ,type,
+        TO_CHAR(SUBSTR(t.REQUEST_BODY,0,3999)),
+        r.CURRDATE  ,comp_id
+--having 
+--(
+--MAX(r.RESPONSE_BODY)     is null
+--MAX(r.RESPONSE_BODY)     like '%Internal Server Error%'
+-- MAX(r.RESPONSE_BODY)  not like '%Inbound Delivery%'
+----and MAX(r.RESPONSE_BODY)  not  like '%Message_Description":"Validation%not found%'
+--)
+
+
+order by TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') desc;
+

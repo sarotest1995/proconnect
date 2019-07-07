@@ -1,0 +1,8 @@
+--Putaway Confirmation Interface Execute
+exec pcsit_ALPway_spnew 'Primary_Ref_Doc_No','','File Trigger to Sap (Y/N)'
+
+--Wave Confirmation Interface Execute
+exec pcsit_ALWave_sp '','WM_Wave_Number','File Trigger to Sap (Y/N)'
+
+--Pack Confirmation Interface Execute
+exec pcsit_ALPack_sp '','WM_Pack_Plan_Number','File Trigger to Sap (Y/N)'

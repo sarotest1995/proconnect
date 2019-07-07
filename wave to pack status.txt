@@ -1,0 +1,50 @@
+
+
+--** wave with pick AND PACK STATUS  **----
+
+select distinct a.wms_pick_wave_no as wave_num, a.wms_pick_so_no as primary_ref_doc_num,a.wms_pick_exec_no as pick_exe_num, b.wms_pick_exec_status as pick_exec_status, c.wms_pack_exec_no as pack_exe_num, d.wms_pack_exec_status as Pack_EXE_status
+from  wms_pick_exec_dtl a
+left join wms_pick_exec_hdr b on b.wms_pick_exec_no=a.wms_pick_exec_no
+left join wms_pack_exec_thu_dtl c on c.wms_pack_so_no= a.wms_pick_so_no
+left join wms_pack_exec_hdr d on d.wms_pack_exec_no = c.wms_pack_exec_no
+Where a.wms_pick_loc_code='MH008P0148' 
+and a.wms_pick_wave_no in (
+
+'AL/WNC/001221'
+
+);
+
+--** only wave STATUS WITH OB PO NUM **----
+
+
+select distinct  a.wms_oub_prim_rf_dc_no as OB_primary_ref_doc_num,a.wms_oub_outbound_ord as outbnd_ord_num,
+wms_oub_item_code as item_code,b.wms_oub_itm_order_qty as item_QTY,
+a.wms_oub_ob_status as OB_order_status,c.wms_wave_no as wave_num, f.wms_wave_status as wave_status
+from wms_outbound_header a
+left join wms_outbound_item_detail b on  a.wms_oub_outbound_ord = b.wms_oub_outbound_ord
+left join wms_wave_dtl c on c.wms_wave_so_no = a.wms_oub_prim_rf_dc_no
+left join wms_wave_hdr f on f.wms_wave_no =c.wms_wave_no
+where a.wms_oub_loc_code='MH008P0148' and a.wms_oub_prim_rf_dc_no in (
+
+
+'419839590'
+
+
+);
+
+--** wave with OB po,pick AND PACK STATUS  **----
+
+select distinct  a.wms_oub_prim_rf_dc_no as OB_primary_ref_doc_num,a.wms_oub_outbound_ord as outbnd_ord_num,
+wms_oub_item_code as item_code,b.wms_oub_itm_order_qty as item_QTY,
+a.wms_oub_ob_status as OB_order_status,c.wms_wave_no as wave_num, f.wms_wave_status as wave_status,d.wms_pick_item_code as picked_item,d.wms_pick_qty as pick_qty, e.wms_pick_exec_status as pick_status
+from wms_outbound_header a
+left join wms_outbound_item_detail b on  a.wms_oub_outbound_ord = b.wms_oub_outbound_ord
+left join wms_wave_dtl c on c.wms_wave_so_no = a.wms_oub_prim_rf_dc_no
+left join wms_wave_hdr f on f.wms_wave_no =c.wms_wave_no
+left join wms_pick_exec_dtl d on d.wms_pick_wave_no = c.wms_wave_no
+left join wms_pick_exec_hdr e on e.wms_pick_exec_no = d.wms_pick_exec_no
+where a.wms_oub_loc_code='MH008P0148' and a.wms_oub_prim_rf_dc_no in (
+
+'419839590'
+
+);

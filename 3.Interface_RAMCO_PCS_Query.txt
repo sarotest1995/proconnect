@@ -1,0 +1,11 @@
+
+-----*****To check when order data received from RAMCO to PCS*****-----
+
+select *  from scmdb..pcs_putaway_confirm  where site_id='MH008P0148' and convert(date,GRN_DATE)=convert(date,'2019-04-27')
+order by process_date desc
+
+select * from scmdb..pcs_pack_complete_log where location='MH008P0148' and convert(date,Pack_Plan_Date)=convert(date,'2019-04-27')
+order by processdate desc
+
+select * from scmdb..pcs_wave_confirm_log  where location='MH008P0148' and convert(date,WaveDate)=convert(date,'2019-04-27')
+order by processdate desc

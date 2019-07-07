@@ -1,0 +1,8 @@
+--- *** POSTMAN URL for I/B and O/B **** ----
+
+---** ASN ***--
+https://erp.proconnect.in/SamvaadproAPI/api/ServiceList/ProConnectASN?clientName=ASHOKLEYLAND
+
+---** SO ***--
+https://erp.proconnect.in/SamvaadproAPI/api/ServiceList/ProConnectSO?clientName=ASHOKLEYLAND
+

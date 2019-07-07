@@ -1,0 +1,20 @@
+
+
+update wms.service_task set status = 'OthCust' where   ref1 = 'TripSheet' and status = 'Failed' and comp_id is null and ref3 is null;
+update wms.service_task set status = 'OthCust' where   ref1 = 'TripSheet' and status = 'Failed' and comp_id = 'BSH';
+update wms.service_task set status = 'Closed' where ref1 = 'GateEntry' --and   site_id  not in ('CHE1','CHE2','CHE3','AHM1')
+and status = 'Failed' and EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//Ref_Doc_Type_1')  = 'STO';
+update wms.service_task set status = 'Closed' where ref1 = 'GateEntry' --and   site_id  in ('CHE1','CHE2','CHE3','AHM1') 
+and status = 'Failed' and EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//PO_Number') like 'B50%';
+update wms.service_task set status = 'Closed' where ref1 = 'GateEntry' --and   site_id  in ('CHE1','CHE2','CHE3','AHM1') 
+and status = 'Failed' and EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//ASN_Type') = 'Import';
+update wms.service_task set status = 'Closed' where ref1 = 'GateEntry' --and   site_id  in ('CHE1','CHE2','CHE3','AHM1') 
+and status = 'Failed' and EXTRACTVALUE(xmltype(request_body), '//RamcoGateEntry//Header_Details//ASN_Type') = 'Return';
+update wms.service_task set status = 'Closed' where ref1 = 'GateEntry'  and status = 'Failed' and  ( comp_id is null and site_id is null ) ;
+update wms.service_task set status = 'Closed' where ref1 = 'GateEntry'  and status = 'Failed' 
+and  site_id not in ('CHE1','CHE2','CHE3','AHM1','DEO1','SEC1','VIZ1','VIJ1','KOL1' );
+-- GRN
+update wms.service_task set status = 'Closed' where ref1 = 'GRN'  and status = 'Failed' 
+and  site_id not in ('TN001P0027','GJ001P0027','DN003P0027','TG001P0027','AP001P0027','AP002P0027','WB001P0027' );
+update wms.service_task set status = 'Closed' where ref1 = 'GRN'  
+and status = 'Failed' and EXTRACTVALUE(xmltype(request_body), '//GRNRamco//Putaway_Confirmation//Inbound_Order_Type') = 'Import';

@@ -1,0 +1,76 @@
+SELECT    
+        t.rec_id                               AS Servicetask_recid , 
+         ref2, t.Ref_no                                     AS Servicetask_refno,
+          MAX(r.RESPONSE_BODY) AS log_Response,     
+        --MAX(r.record_id)     AS Log_recordid,
+        TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') AS Servicetask_Createddate,--   t.ref1                                      AS Servicetask_Type,
+       Type,
+       
+        loc,
+             
+        t.STATUS                                    AS Servicetask_status,
+        TO_CHAR(SUBSTR(t.REQUEST_BODY,0,3999))      AS Servicetask_Requestbody,
+        r.CURRDATE                                  AS Log_date,       
+        comp_id       
+FROM
+      (
+          SELECT  ref2  ,EXTRACTVALUE(xmltype(request_body), '//GRNRamco//Putaway_Confirmation//Serial_Number')  Ref_no,site_id loc,
+          EXTRACTVALUE(xmltype(request_body), '//GRNRamco//Putaway_Confirmation//Inbound_Order_Type')  Type,
+          a.ref1,A.CREATED_DATE,TO_CHAR(a.UPDATED_DATE,'dd-MM-yyyy') UPDATED_DATE,a.comp_id,A.STATUS,A.REQUEST_BODY,a.REC_ID
+          FROM wms.service_task a
+          WHERE --Comp_id = '0027' and
+--          and length(ref2) >=9
+           ref1 in ('GRN' ) --and site_id = 'TN001P0027' 
+          and  EXTRACTVALUE(xmltype(request_body), '//GRNRamco//Putaway_Confirmation//Inbound_Order_Type')  != 'Return'
+--          and ref2 like 'B5%'
+-- invoice amt mismatch
+--          and ref2   in ('B10007704')
+          and created_date >= '20-MAY-2019'
+          AND status IN ('Failed')
+         
+      ) t
+left JOIN
+    ( 
+        select  min(CURRDATE)CURRDATE, EXTRACTVALUE(xmltype(request_body), '//RedGRN//ConfirmationNumber')  Ref_no, min(record_id)record_id,
+       max (NVL(TO_CHAR(SUBSTR(RESPONSE_BODY,0,3999)),'NA'))RESPONSE_BODY,max(NVL(a.REQUEST_STATUS,'NA'))REQUEST_STATUS
+        from WMS.Service_Request_Outbound a
+        where  currdate >= '20-APR-2019' and additional_info = 'GRN'  
+--        and record_id in (select max(record_id)  from WMS.Service_Request_Outbound d 
+--        where  EXTRACTVALUE(xmltype(a.request_body), '//RedGRN//ConfirmationNumber')  = EXTRACTVALUE(xmltype(d.request_body), '//RedGRN//ConfirmationNumber') 
+--        and a.additional_info = d.additional_info 
+--        )
+--            and EXTRACTVALUE(xmltype(request_body), '//RedGRN//ConfirmationNumber') = 'A032ASNC0000340'
+        group by  EXTRACTVALUE(xmltype(request_body), '//RedGRN//ConfirmationNumber')
+    ) r
+ON t.Ref_no         = r.Ref_no
+--where ref2 in (
+--'B10003282')
+--  where ref2 not in ( 
+--  -- zero lbh
+--  'B10004457','B10001748','B10002489','B10002009',
+--  
+--  -- values updated already 
+--  'B10002495','B10002494')
+GROUP BY  t.rec_id ,t.ref1 ,ref2,t.Ref_no,loc, TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') ,
+        t.STATUS     ,Type,
+        TO_CHAR(SUBSTR(t.REQUEST_BODY,0,3999)),
+        r.CURRDATE  ,comp_id
+--having 
+--(
+--MAX(r.RESPONSE_BODY)     like '%Internal Delivery %'
+-- MAX(r.RESPONSE_BODY)   like '%Internal Delivery%'
+-- MAX(r.RESPONSE_BODY)    like '%Not Found%'
+--)
+--MAX(r.RESPONSE_BODY)  not  like '%Maintain Volumetric and Weight details from this specific plant%'
+--and  MAX(r.RESPONSE_BODY)  not  like '%Maintain mandatory field: Place of Dispatch%'
+
+-- 
+-- and MAX(r.RESPONSE_BODY)     like '%Internal Server Error%'
+--and  MAX(r.RESPONSE_BODY)  not  like '%PU Ordered quantity exceeded%'
+--and MAX(r.RESPONSE_BODY)   not  like '%Not Found%'
+--and MAX(r.RESPONSE_BODY)   not  like '%No goods receipt possible for purchase order%'
+--and 
+----Success document no.
+
+order by TO_CHAR(t.CREATED_DATE ,'dd-MM-yyyy hh:mm') desc;
+
